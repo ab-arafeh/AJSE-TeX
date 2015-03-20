@@ -1,0 +1,306 @@
+\begin{abstract}
+Recently, a shift from CMOS lithography to nanoelectronics
+chemical assembly has been under investigation. Nanoscale
+components are assembled into arrays of low-power and high-density
+nanofabrics which can be integrated with conventional CMOS
+systems.  The inability to achieve inexpensive defect-free mass
+manufacturing of nanoelectronics is the largest impediment of
+their adoption. Limited nanowires lengths and defect-prone
+nanodevices pose significant challenges for design automation
+tools. In this work, we propose a design phase for cells mapping
+and reconfiguration in novel hybrid CMOS/nanoelectronics
+architecture called CMOL. \emph{Reconfiguration} consists of
+finding new suitable physical location for each gate such that the
+circuit becomes defect free. The novelty of this work is to
+engineer non-deterministic iterative search heuristics, namely
+Simulated Evolution (SimE) and Tabu Search (TS), to find cells
+assignment around defective nano-components. Circuits of various
+sizes from ISCAS'89 benchmarks are used to evaluate the designed
+heuristics. Results show that SimE and TS yield successful
+reconfigurations in reasonable computation time when nanodevices
+defect rate is as high as $50\%$ and nanowires cut rate up to
+$70\%$.
+\end{abstract}
+
+
+\begin{keyword}
+Combinatorial Optimization, CAD, CMOL, Nanofabrics,
+Reconfiguration, Defects, Simulated Evolution, Tabu Search, VLSI,
+Design Automation.
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+Scaling down CMOS lithography process into nanometer-region brings
+about a number of serious challenges. Among those challenges are
+fabrication plant costs and sub-micron physical limitations like
+short channel effects and doping fluctuations~\cite{9cmol,10cmol}.
+A shift from CMOS-based integrated circuits to chemically
+assembled nanoelectronics has been under investigation in the past
+years. The new nanoelectronics circuits take advantage of small,
+basic and active components with reproducible size and structure.
+Those components are based on the recent advances in single
+electron devices~\cite{4cmol, 8cmol}, quantum dot
+cells~\cite{tah7}, reconfigurable switches~\cite{goldstain10}, and
+negative differential resistors (NDR)~\cite{goldstain7}.
+
+Molecular-sized nanoelectronics are very small in which they need
+to be chemically self-assembled instead of being lithographically
+fabricated. Self-assembly process is based on synthesizing and
+connecting nano-scale components (e.g., wires or devices) through
+chemical processes~\cite{cpsa}. A group of Nanowires are
+self-aligned to construct an array (i.e., two-dimensional
+orthogonal grid) with nanometer-scale spacing. At each
+intersection of two wires a configurable component (e.g., switch
+or device) is formed. Self-assembly and Self-alignment result in
+simple orthogonal grid-shaped nanofabrics, where
+post-manufacturing field configuration can render them into
+functional circuits.
+
+Overcoming nanometer-scale lithography limitations with
+\emph{bottom-up} components' self-assemble comes at a price. The
+small size devices and the fundamental non-determinism of the
+chemical process give rise to high defect density. Defects are the
+major issue for devices with few atoms in diameter. The small
+cross-sections and contact areas can render nanoelectronics
+fragile and defect prone. The order of defects in the nanofabrics
+surpass the highly controlled lithography-based CMOS manufacturing
+process.
+
+
+Nanofabrics have a built-in defect tolerance provided by
+reconfigurable and defect-testable nanodevices along with
+alternative nanowire connections. The configurability and rich
+interconnects offer the choice between different nanowires and
+nanodevices to implement a particular circuit. Reconfiguring a
+circuit involves reprogramming nanodevices (set each of them to be
+``ON" or ``OFF") based on new \emph{Configuration Data}.
+Nanofabrics pose a compromise between simple and imprecise
+manufacturing process and complex design automation tools which
+are needed to implement circuits by configuring nanofabrics around
+defective components.
+
+Nanoelectronics can operate at THz frequencies~\cite{gbit} and
+consume less power as switching only involve few electrons.
+Moreover, their small size (i.e., few nanometers) offers huge
+density improvement over conventional CMOS technology which entail
+multiple micro-scale transistors per logic cell. However, absence
+of transistors in nanoelectronic systems constitute functional
+restrictions such as lack of register structures and mechanisms
+for signal restoration. Many suggested systems use CMOS to buffer
+signals and provide the additional necessary functionalities
+(e.g., high voltage gain). Following this approach, many
+researchers proposed hybrid CMOS/nanodevices circuits with
+different layouts and organizations, examples of which include
+Likharev et al. CMOL circuits~\cite{CMOL2005} and
+Crossnets~\cite{19cmolplac}, and Goldstein et al.
+Nanofabrics~\cite{13cmolplac}. Recent reviews of CMOS/nanodevices
+circuits can be found
+in~\cite{10cmolplac,16cmolplac,CMOLcircuits,28cmolplac}.
+
+Nanowire interconnects are local in nature (i.e., they have
+limited length), which reduces the impact of a particular defect
+to only a small subset of the nanofabric. Nanofabrics can be
+tested in conjunction with an outside circuit or by configuring
+part of it to test its own resources. Once a defect map is
+generated, defect information can be used to avoid defective
+components when implementing a particular circuit. Tahoori et
+al.~\cite{survey} surveyed different approaches for defect
+detection and diagnosis in nanofabrics computing. Different
+variations and enhancement to BIST have been proposed, among those
+are designs reported in~\cite{bist,mteh,mandar}.
+
+Nanoelectronic fabrics are promising high-density and low-power
+circuits. The main impediment for the adaptation of
+nanoelectronics is their imprecise manufacturing process. This
+work aims to help speed up the adaptation of nanoelectronics
+through advances in design automation tools that can map cells to
+arrays with defects through circuits reconfiguration. Harnessing
+the power of the very small molecular devices can be done by
+employing effective design tools that map logic circuits to
+nanofabrcis and perform post-fabrication reconfiguration around
+defects. The novelty of this work is to engineer iterative
+heuristics to find an assignment around defective nano-components.
+The main contributions of this papers are:
+\begin{enumerate} \item {} A design automation phase for
+circuits placement and reconfiguration in CMOL hybrid
+CMOS/nanodevices architecture via the engineering of iterative
+heuristics. \item{} A formulation of CMOL reconfiguration problem
+and extensive experimentations using different defect maps. \item
+{} Addressing the solution to  overcome three major sources of
+defects (stuck-open, cut nanowires and defective CMOS cells) by
+iterative improvement of circuit's configuration.
+\end{enumerate}
+
+The paper is organized as follows; in the next section we will
+give a review covering CMOL hybrid CMOS/nanodevices fabric and
+previous solutions for CMOL cells placement and reconfiguration
+are then discussed. Section 3 provides problem formulation of
+gates-to-nanofabric mapping and design automation flow.
+Engineering and implementation of non-deterministic heuristics
+(Simulated Evolution-SimE and Tabu Search-TS) are presented in
+Section 4. Section 5 gives results and further discussion of
+nanofabric reconfiguration problem. Finally, we conclude with
+final remarks and suggestions.
+
+
+\section {Literature Review} \label{review}
+CMOL cell-based, Field-Programmable Gate Array (FPGA)-like circuit
+integrates conventional inverter-based four-transistor MOSFET CMOS
+cells with uniform reconfigurable nanofabric~\cite{CMOL2005}. Each
+generic CMOS cell consists of an inverter and two pass
+transistors. Two-terminal nanodevices ``latching switches", which
+can serve both inter-cells connectivity and wiring-logic, are
+self-assembled at each nanowires crosspoint. CMOL cells
+connectivity is limited to only
+\begin{math} M = a^{2} - 2 \end{math} other
+cells located within a square-shaped \emph{Connectivity Domain}
+shown in Figure~\ref{1-2}, where $a$ is a positive integer number
+which indicate the connectivity domain radius.
+
+\begin{figure}[t]
+\centering \includegraphics[scale=0.32]{1-2.eps} \caption{CMOL
+FPGA-like Architecture: Connectivity Domain. Cells in light gray
+comprise the connectively domain of the cell in dark gray. $a=4$
+and $M=a^{2}-2 = 14$.} \label{1-2}
+\end{figure}
+
+Conventionally, CMOL cells mapping is split into two steps; 1)
+defect-unaware cells \emph{Placement}~\cite{SaitArafehts}, where
+logic gates are assigned to CMOL cells according to the
+connectivity domain constraint. 2) \emph{Reconfiguration} around
+defective components. Further discussion of CMOL circuits mapping
+design flow is presented in Section~\ref{flow}. Recently, several
+proposals had been introduced for defect-unaware cell
+placement/assignment in CMOL circuits including the works of
+Likharev et al.~\cite{CMOLplacement,CMOLcircuits}, Hung et
+al.~\cite{CMOLSAT}. Previous attempts to use sub-optimal search
+heuristics for CMOL placement are reported
+in~\cite{CMOLGA,CMOLMA,CMOLintegrated,CMOLANT}.  Simulated
+Evolution~\cite{SaitArafehsime} and Tabu
+Search~\cite{SaitArafehts, SaitArafehts2} heuristics have also
+been attempted for defect-unaware CMOL placement problem.
+
+Finding the optimal reconfigurations around defects for large
+nanofabrics is not guaranteed as the given problem is
+NP-hard~\cite{Yellambalase}. Previously proposed algorithms by
+Huang et al~\cite{huang}  and Tahoori et al.~\cite{tahmapping} are
+only applicable for small nanofabric crossbars. Greedy algorithms
+yield degraded results and require considerable computation time
+in case of high defect rates. Reconfiguration around defective
+CMOL nanodevices was also reported by Likharev et
+al.~\cite{CMOL2005}. They developed a reconfiguration algorithm
+assuming only one type of defect (stuck-open). The algorithm
+preforms a number of sequential attempts to move each gate from a
+cell with bad input or/and output connections (i.e., connections
+which use defective nanodevices) to a new cell. Each gate may be
+swapped with another one, provided that all connections of the
+swapped gates are realized with the CMOL fabric and are not
+defective. The authors only showed case studies of reconfiguring
+Kogge-Stone adder and full crossbar around randomly distributed
+defects. Other attempt to reconfigure CMOL circuits were reported
+using SAT solvers~\cite{CMOLSAT}. Few clustered defects (around
+single source) were introduced into small or medium size CMOL
+circuits. A center of mass computation is performed to focus on a
+limited reconfiguration region where defects are formulated as
+satisfiability constraints.
+
+The aforementioned reconfiguration techniques are expected to be
+sufficient for small or medium size circuits. Reconfiguration
+becomes more complex if CMOL has high rates of wider range of
+defects or when circuits' gates have high fan-ins or fan-outs. In
+such cases, resorting to SAT or sequential-attempts algorithms
+will be insufficient and circuit reconfiguration may fail.
+
+
+\section{Design Automation and Problem Description} \label{flow}
+To implement a combinational circuit in CMOL; NOR-based gates need
+to be assigned to cells (i.e., CMOL slots). Those cells are
+connected by two-levels of perpendicular nanowires. Programable
+nanodevices are chemically assembled at the intersection of the
+two nanowires. In this work we will consider the assignment of
+gates to cells in a grid. All cells of the grid and nanodevices
+may not be defect-free. The three used defect models are:
+\begin{enumerate} \item {} Stuck-open: Here the nanodevice
+connecting two perpendicular nanowires is stuck-open (i.e., not
+programmable). In this case, the connection between two cells
+through this nanodevice is not feasible. However, the two CMOL
+cells can still be used, and only their connectivity domains
+change. \item {} Broken Nanowire: An input or output nanowire of a
+CMOL cell is broken into two segments. Thus, CMOL cell may not be
+connected to all other CMOL cells within its input/output
+connectivity domains. The connectivity domains of the affected
+cells will be significantly reduced. \item {} CMOS Cell Defect: In
+this case, the CMOS cell could be unusable, because the
+input/output pins connecting the CMOS stack to the input/output
+nanowires are broken, or the CMOS inverter is defective. Any cell
+with this type of defect cannot be used. \end{enumerate}
+
+Defects of type 1 and type 2 are shown in Figure~\ref{defect}. In
+stuck-open defects, the input of cell A cannot be connected with
+the output of cells B and C, because the nanodevices connecting
+them are not programable. In broken nanowire defect; the number of
+unreachable cells (e.g., cells B, C and D) from a given cell
+(e.g., cell A) could be larger as more connections are affected by
+the cut nanowire. Each unreachable nanodevice can be modelled as
+stuck-open. CMOL is susceptible to stuck-close defects; for
+moderate defect rate the circuit may become unusable. Likharev et
+al~\cite{CMOLFULL} reckoned that a defect probability of $0.02\%$
+may not be tolerated. Any probability higher than that means that
+most of CMOL cells are connected with each others because of the
+stuck-close nanodevices. For that reason, we did not included
+stuck-close defects in this work on reconfiguration, as other
+approaches should be investigated to mitigate this type of
+defects.
+
+\begin{figure*}[ht]
+\centering \includegraphics[scale=0.5]{Defects.eps}
+\caption{Defects in CMOL circuits: (a) Type 1: Stuck-Open
+nanodevices defect (b) Type 2: broken nanowire defect. Cells shown
+in light gray are not reachable by the cell in dark gray (not in
+the given cell connectivity domain).} \label{defect}
+\end{figure*}
+
+Design automation of CMOL circuits comprises a number of
+sequential steps. It starts with Technology Mapping and converting
+the circuits into a network of NOR/NOT gates (with a certain
+maximum fan-in). Figure~\ref{dflow} shows the proposed design flow
+for mapping logic circuits into CMOL grid; it consists of two main
+stages (\emph{defects-unaware Placement} and \emph{defects
+Reconfiguration}). When any of the two stages terminate, some
+connections may still be unresolved (i.e., beyond the connectivity
+domain in case of placement or use stuck-open or cut nanowires in
+case of reconfiguration). In such cases, complementary \emph{Nets
+Resolving} steps are needed to insert extra buffers (i.e., pair of
+inverters to maintain signal polarity) as intermediate cells
+between unconnected gates. Those buffers compensate for the
+missed/defective connections. Each pair of inverters can make a
+cell connect to another cell whose distance is within three times
+the value of the connectivity domain radius $a$. Violating nets
+(i.e., those longer than $a$ or use defective nan-components) may
+not be resolved successfully in case no empty cells are available
+for the additional buffers, or when gates with violating nets are
+not reachable because all cells in their connectivity domain are
+occupied. If that is the case, all design stages are repeated
+using bigger CMOL grid or longer connectivity radius.
+
+We have investigated CMOL placement in our previous works
+involving Simulated Evolution~\cite{SaitArafehsime} and Tabu
+Search~\cite{SaitArafehts}. In this work we address the second
+design stage, namely Reconfiguration, and formulate it as an
+optimization problem. In the subsequent paragraphs, problem
+constraints are formulated and an objective cost function is
+given. Iterative heuristics (SimE and TS) are then characterized
+to seek an optimized cells configuration that minimizes the given
+cost.
+
+\begin{figure*}[htb]
+\centering \includegraphics[scale=0.84]{flow.eps} \caption{Design
+flow of CMOL cells mapping; it consists of two main stages, defect
+unaware \emph{Placement} and circuits \emph{Reconfiguration}
+around defects, each main stage is followed by a complementary
+\emph{Nets Resolving} step.} \label{dflow}
+\end{figure*}
