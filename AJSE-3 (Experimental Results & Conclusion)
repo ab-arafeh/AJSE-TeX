@@ -1,0 +1,650 @@
+\subsection{Experimental Setup} \label{scenarios}
+Given defects distributions discussed in Section~\ref{defects}; we
+have performed multiple experiments using three types of defect
+maps; a randomly generated map ($R1$) and two clustered maps ($C1$
+and $C2$). Those maps have $C=0.8$ and standard deviation
+$\sigma=\frac{2a}{3}$ and $\sigma=\frac{4a}{3}$ for $C1$ and $C2$
+respectively. Evaluation of search heuristics efficiency and
+performance is done using the three defect scenarios shown in
+Table~\ref{t2}, where $q_{nano}$ is the probability of a
+nanodevice is stuck-open (type 1 defect), $q_{wire}$ is the
+probability of a nanowire is broken (type 2 defect), and
+$q_{cell}$ is the probability of a CMOS cell is defective (type 3
+defect). Scenario (i) includes five experiments when $q_{nano}$
+ranges between $10\%$ to $50\%$, while $q_{wire}=20\%$ and
+$q_{cell}=0\%$, and similarly scenario (ii) is comprised of seven
+experiments when $q_{wire}$ probability is between $10\%$ and
+$70\%$ and $q_{nano}=20\%$. Scenario (iii) has fixed $q_{nano}$
+and $q_{wire}$ probabilities, and $q_{cell}$ equals to $10\%$ or
+$20\%$.
+
+\begin{table}[!ht] \footnotesize
+\begin{center}
+\newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{Defect Scenarios;
+scenario (i) includes 5 experiments for different $q_{nano}$
+probabilities, scenario (ii) includes 7 experiments for different
+$q_{wire}$ probabilities, and scenario (iii) includes 2
+experiments for different $q_{cell}$ probabilities. } \label{t2}
+\begin{tabular}{|c|c|c|c|}
+\hline Scenario & $q_{nano}$  & $q_{wire}$ & $q_{cell}$
+\tabularnewline \hline (i) & 10\% - 50\% & 20\% & 0\%
+\tabularnewline
+ \hline (ii) & 20\% & 10\% - 70\% & 0\% \tabularnewline
+ \hline(iii) & 20\% & 20\% & 10\% - 20\% \tabularnewline
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+Reconfiguration is applied to 19 circuits of different sizes from
+ISCAS'89 benchmarks suite~\cite{ISCAS89}. Further consideration
+should be given to those benchmarks by replacing sequential
+elements’ (i.e., flip-flop) inputs and outputs with POs and PIs
+respectively. Circuits are then mapped by SIS synthesis
+tool~\cite{k6:sis} to a NOR netlist with maximum of five inputs.
+Details of ISCAS'89 circuits are shown in Table~\ref{t3}; the
+numbers of $Cells$ including $Gates$, $Inputs$ and $Outputs$ are
+given.
+
+Table~\ref{t3} also gives CMOL 2-D grids sizes which are used to
+implement ISCAS'89 benchmarks; \emph{Area} $(Row \times Column)$
+indicates the number of \emph{Rows} and \emph{Columns} and the
+number of \emph{CMOL Cells} which a given benchmark uses. The grid
+sizes given under $q_{cell} = 0\%$ are those for circuits
+reconfiguration in defect scenarios (i) and (ii). For scenario
+(iii), the used area is shown under $q_{cell}=10\%$ and
+$q_{cell}=20\%$. Defect maps $R1$, $C1$ and $C2$ are generated for
+each grid size; benchmarks that need similar CMOL gird sizes are
+reconfigured using same defect maps . For each benchmark circuit
+the grid utilization is shown in the table; $GU\%$ represents the
+ratio of used cells in CMOL gird.
+
+Simulated Evolution and Tabu Search are implemented using Java
+programming language and run on a machine with 1.5 GHz Intel
+Pentium M processor and 512MB memory. Technology mapping is
+achieved using SIS logic synthesis tool~\cite{k6:sis}. Circuits
+verification and defect maps generation programs are also written
+in Java. Comparisons between CMOL reconfigured circuits and
+original benchmarks logical functionality are carried out by HOPE
+simulator~\cite{hope}, which runs on a LINUX machine. Heuristics
+are regulated to stop when solution's cost (i.e., number of
+defective nanodevices) becomes zero or when a predefined number of
+iterations is reached; in our case we have set the number of
+iterations in SimE to 4000 and used a larger number of iterations
+for Tabu Search. The average value of results obtained from 20
+successful reconfigurations for each circuit is reported, where
+each run uses different seeds for random numbers.
+
+
+
+\begin{table*}[!ht] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{ISCAS'89 benchmarks
+and corresponding CMOL's grid sizes in $(Row \times Column)$, and
+grid utilization GU\%, given different CMOS cells defect
+($q_{cell}$) probabilities.} \label{t3} {
+\begin{tabular}{|c|c|c|c|c|>{\centering}m{1.7cm}|c|>{\centering}m{1.7cm}|c|>{\centering}m{1.7cm}|c|}
+\hline \multirow{2}{*}{\centering Circ.} &
+\multirow{2}{*}{\centering Cells} & \multirow{2}{*}{\centering
+Gates} & \multirow{2}{*}{\centering Inputs} &
+\multirow{2}{*}{\centering Outputs} & \multicolumn{2}{c|}
+{\centering $q_{cell} = 0\%$ } & \multicolumn{2}{c|} {\centering
+$q_{cell} = 10\%$ } & \multicolumn{2}{c|} {\centering $q_{cell} =
+20\%$ } \tabularnewline \cline {6-11}
+ & & & & & Area $(Row \times Column)$ &  GU\% & Area $(Row \times Column)$ &  GU\% & Area $(Row \times Column)$ &  GU\%  \tabularnewline \hline
+s27     & 19 &  8 &   7 &  4 &      25$(5 \times 5)$     &   76.00
+&      -    &   -   &    -  &   -   \tabularnewline \hline s208 &
+136 & 109 & 18 & 9 &    169$(13\times 13)$     &   80.47   & -
+&   -   &    -  &   -   \tabularnewline \hline s298    &  122 & 85
+& 17 & 20 &      144$(12 \times 12)$  &   84.72   &    -  & -   &
+-  &   -   \tabularnewline \hline s344    &  180 & 130 & 24 & 26 &
+196$(14 \times 14)$    &   91.84   &    -  &   -   & -  &   -
+\tabularnewline \hline s349    &  184 & 134 & 24 & 26 &
+196$(14\times 14)$     &   93.88   &    -  &   -   &    -  &   -
+\tabularnewline \hline s382    &   175  & 124  & 24 & 27 & 196$(14
+\times 14)$    &   89.29   &    -  &   -   &    -  &   -
+\tabularnewline \hline s386    &  164 & 138 & 13 & 13 &    196$(14
+\times 14)$    &   83.67   &    -  &   -   &    -  &   -
+\tabularnewline \hline s400    &  188 & 137 & 24 & 27 &    196$(14
+\times 14)$    &   95.92   &    -  &   -   &    -  &   -
+\tabularnewline \hline s420    &  299 & 248 & 34   & 17 & 361$(19
+\times19)$     &   82.83   &    -  &   -   &    -  &   -
+\tabularnewline \hline s444    &  187 & 136 & 24 & 27 &    196$(14
+\times 14)$    &   95.41   &    -  &   -   &    -  &   -
+\tabularnewline \hline s510    &  304 & 266 & 25 & 13 &    361$(19
+\times 19)$    &   84.21   &      -    &   -   &    -  &   -
+\tabularnewline \hline s526    & 273 & 222 & 24 &  27 &    324$(18
+\times 18)$    &   84.26   &      -    &   -   &    -  &   -
+\tabularnewline \hline s641    & 302 & 206 & 54 & 42 &    676$(26
+\times 26)$    &   44.67   &    676$(26 \times 26)$    &   44.67 &
+676$(26 \times 26)$    &   44.67   \tabularnewline \hline s713
+&  321 & 225 & 54 & 42 &    676$(26 \times 26)$    & 47.49   &
+676$(26 \times 26)$    &   47.49   &    676$(26 \times 26)$    &
+47.49   \tabularnewline \hline s820    & 447 & 400 & 23 & 24 &
+529$(23 \times 23)$    &   84.50   &    576$(24 \times 24)$    &
+77.60   &    625$(25 \times 25)$    &   71.52 \tabularnewline
+\hline s832    & 454 & 407 & 23 & 24 &    529$(23 \times 23)$    &
+85.82   &    576$(24 \times 24)$    &   78.82 &    625$(25 \times
+25)$    &   72.64   \tabularnewline \hline s838    & 606 & 507 &
+66 & 33 &    676$(26 \times 26)$    & 89.64   &    729$(27 \times
+27)$    &   83.13   &    784$(28 \times 28)$    &   77.30
+\tabularnewline \hline s1196   & 675 & 613 & 31 & 31 &    729$(27
+\times 27)$    &   92.59   &    841$(29 \times 29)$    &   80.26
+&    900$(30 \times 30)$    &   75.00 \tabularnewline \hline s1238
+& 724 & 662 & 31 & 31 &    784$(28 \times 28)$    &   92.35   &
+900$(30 \times 30)$    &   80.44 &    961$(31 \times 31)$    &
+75.34   \tabularnewline \hline
+\end{tabular}
+}
+\end{center}
+\end{table*}
+
+%-------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------
+
+\subsection{Reconfiguration Results}
+This section presents the final results of CMOL reconfiguration
+using Simulated Evolution and Tabu Search iterative heuristics. To
+reconfiguring circuits in CMOL, we have adhered to the original
+description of the connectivity domain shown in Figure~\ref{1-2}
+with connectivity radius $a=18$.\footnote{Previous solutions for
+CMOL cells
+placement~\cite{CMOLSAT,CMOLGA,CMOLMA,CMOLintegrated,SaitArafehsime,SaitArafehts}
+defined the connectivity domain based on Manhattan distance, where
+a cell is said to be within the connectivity domain of another
+cell if the Manhattan distance between them is less or equal to
+connectivity radius $a=12$. Here in this paper we have defined the
+connectivity domain based on the original description given
+in~\cite{CMOLplacement} as shown in Figure~\ref{1-2}. Given a
+particular connectivity radius $a$, the former definition has
+bigger connectivity domains than the later one. For that reason,
+we have used a connectivity radius $a=18$ to compensate the
+difference between the two definitions. (e.g., if $a=4$ the size
+of the connectivity domain shown in Figure~\ref{1-2} will be
+$M=a^{2}-2=14$ cells, while if Manhattan distance is used
+$M=40$).} In Simulated Evolution we have used a bias $B$ between
+$[-0.06, 0.05]$, where the small bias values are used for high
+defect rates. Negative bias was required to reduce the number of
+selected elements (especially in early iterations) to prevent the
+heuristic from performing conflicting moves which may result in
+poor exploration of the search space. Results reported in this
+section were not compared with those based on
+Satisfiability~\cite{CMOLSAT} (discussed in Section~\ref{review}),
+due to the limited nature of that implementation, which included
+only a small number of defects (less than 10\% of the overall
+nanodevices).
+
+Results for defect scenario (i) are given in the following tables;
+Table~\ref{TimeSimETS} report the maximum and averaged CPU
+computation times (in seconds), which SimE and TS needed to
+reconfigure all benchmark circuits for random and clustered defect
+maps when $q_{nano}$ is between $10\%$ and $30\%$. For this given
+range of stuck-open probabilities, both SimE and TS were
+successful in reconfiguring circuits around all defective
+components. The table shows that SimE required less computation
+time than TS as it employs an evolutionary goodness and selection
+functions. For example, in clustered defect map (C2) and for
+$q_{nano}=30\%$; SimE average computation time is equal to $0.50$
+whereas TS average time is $5.97$. As defect probability rises the
+computation time increases. The maximum CPU time corresponds to
+the large benchmark circuits (e.g., s1238) and those that has many
+multiple fan-in NOR gates (e.g., s820, s832).
+
+\begin{table}[!ht] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{Reconfiguration CPU
+computation time for defect scenario (i) and defect maps $R1$,
+$C1$, and $C2$. ($q_{nano}=10\%-30\%$ - $q_{wire}=20\%$ -
+$q_{cell}=0\%$).} \label{TimeSimETS} {
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline \multirow{2}{*}{Maps} & \multirow{2}{*}{$q_{nano}$} &
+\multicolumn{2}{c|} {\centering SimE } & \multicolumn{2}{c|}
+{\centering TS } \tabularnewline \cline {3-6} & & Max & Avg. & Max
+& Avg. \tabularnewline \hline \multirow{2}{*}{\centering R1} &
+$10\%$ & 0.51  &  0.11  & 1.70  &   0.39 \tabularnewline \cline
+{2-6} & $20\%$ & 0.96  &  0.20  &  3.81  &  0.83 \tabularnewline
+\cline {2-6} & $30\%$ & 2.46  &  0.41  &  17.76 &  2.99
+\tabularnewline \hline \multirow{2}{*}{\centering C1} & $10\%$ &
+0.64  &  0.14  &  1.28  &  0.39 \tabularnewline \cline {2-6} &
+$20\%$ & 1.38  &  0.25  &  3.20  &  0.79 \tabularnewline \cline
+{2-6} & $30\%$ & 2.72  &  0.52  &  44.96 &  5.27 \tabularnewline
+\hline \multirow{2}{*}{\centering C2} & $10\%$ & 0.51  &  0.15  &
+2.08  &  0.56 \tabularnewline \cline {2-6} & $20\%$ & 1.15  & 0.25
+&  4.54  &  1.08 \tabularnewline \cline {2-6} & $30\%$ & 2.82  &
+0.50  &  44.19 &  5.97 \tabularnewline \hline
+\end{tabular}
+}
+\begin{tablenotes}
+\scriptsize {\item [1] Max.: Maximum CPU computation time. \item
+[2] Avg.: Average CPU computation time. \item [3] $q_{nano}$:
+Probability of Stuck-Open nanodevices's defects.}
+\end{tablenotes}\end{center}
+\end{table}
+
+Table~\ref{R1SimE} shows Simulated Evolution results for
+nanodevices stuck-open defect probabilities $q_{nano}=40\%-50\%$.
+\emph{Time} is CPU computation time in seconds and \emph{Buffers}
+is the number of inserted buffers to resolve defective nets. For
+$q_{nano}=40\%$, all circuites were reconfigured successfully,
+while for $q_{nano}=50\%$ only s820 and s832 needed additional
+buffers to resolve defective nets which SimE was unable to
+reconfigure. Those two circuits also needed more buffers when
+defects are clustered compared to randomly distributed defects
+(e.g., s832 required 3 buffers in $R1$, and 6 in $C1$ and $C2$).
+Moreover, SimE's reconfiguration of clustered defects consumed
+more CPU time compared to reconfiguration of random defects. For
+example, $C1$ and $C2$ average CPU time is 3.11, 3.37 seconds
+respectively, compared to 2.01 seconds for random map $R1$.
+
+Similarly, Table~\ref{R1TS} gives Tabu Search results; the
+heuristic found more costly results than those reported by SimE
+for both $40\%$ and $50\%$ probabilities. Furthermore, TS found
+its solutions in considerably more computation time than SimE. TS
+has failed to reconfigure s820 and s832 around clustered defects
+(i.e., maps $C1$ and $C2$) when $q_{nano}=50\%$. The high density
+clustered defects rendered search space exploration difficult
+leading to many unresolved nets, which make adding additional
+buffers using \emph{Net Resolving} procedure not feasible.
+
+Further we have investigated the robustness of our heuristics
+designs by reconfiguring benchmark circuit s1238 using 20
+different clustered defect maps (i.e., 20 clustered defect maps
+all for grid size of $28\times28$). All defect maps have $C=0.8$,
+$\sigma=\frac{4a}{3}$, defect rate $q_{nano}=50\%$ and cut rate
+$q_{wire}=20\%$. The heuristics were run for 40 times for each
+map; reconfiguration was successful in 19 out of 20 maps, with
+overall successful reconfiguration rate of $60\%$ (i.e., $60\%$ of
+the 40 run $\times$ 20 maps $=$ 800 run). For defect maps with
+defect rate $q_{nano}<50\%$ the heuristics successfully
+reconfigured all of the 20 defect maps, and the overall successful
+reconfiguration rate was over $95\%$.
+
+\begin{table*}[htb] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{Simulated Evolution
+reconfiguration results for defect scenario (i) and defect maps
+$R1$, $C1$, and $C2$, when $q_{nano}=40\%-50\%$ - $q_{wire}=20\%$
+- $q_{cell}=0\%$.} \label{R1SimE} {
+\begin{tabular}{|c|>{\centering}m{0.78cm}|c|>{\centering}m{0.78cm}|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.78cm}|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.78cm}|c|}
+\hline \multirow{3}{*}{Circ.} & \multicolumn{4}{c|} {\centering
+$R1$ } & \multicolumn{4}{c|} {\centering $C1$ } &
+\multicolumn{4}{c|} {\centering $C2$ } \tabularnewline \cline
+{2-13}
+
+ & \multicolumn{2}{c|} {\centering $q_{nano} = 40\%$ } & \multicolumn{2}{c|} {\centering $q_{nano} = 50\%$ } &
+ \multicolumn{2}{c|} {\centering $q_{nano} = 40\%$ } & \multicolumn{2}{c|} {\centering $q_{nano} = 50\%$ } &
+\multicolumn{2}{c|} {\centering $q_{nano} = 40\%$ } &
+\multicolumn{2}{c|} {\centering $q_{nano} = 50\%$ }
+\tabularnewline \cline {2-13}
+ & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers \tabularnewline \hline
+s27 &   0.03    &   0   &   0.03    &   0   &   0.03    &   0   &
+0.03    &   0   &   0.03    &   0   &   0.03    &   0
+\tabularnewline \hline s208    &   0.03    &   0   &   0.03    & 0
+&   0.03    &   0   &   0.03    &   0   &   0.06    &   0   & 0.03
+&   0   \tabularnewline \hline s298    &   0.06    &   0 &   0.06
+&   0   &   0.06    &   0   &   0.19    &   0   & 0.03    &   0
+&   0.29    &   0   \tabularnewline \hline s344 &   0.03    &   0
+&   0.06    &   0   &   0.06    &   0   & 0.10    &   0   &   0.06
+&   0   &   0.10    &   0 \tabularnewline \hline s349    &   0.06
+&   0   &   0.10    & 0   &   0.10    &   0   &   0.10    &   0
+&   0.10    &   0   & 0.13    &   0   \tabularnewline \hline s382
+&   0.10    &   0 &   1.22    &   0   &   0.26    &   0   &   0.32
+&   0   & 0.19    &   0   &   1.28    &   0   \tabularnewline
+\hline s386 &   0.26    &   0   &   3.78    &   0   &   0.80    &
+0   & 3.10    &   0   &   0.48    &   0   &   8.54    &   0
+\tabularnewline \hline s400    &   0.13    &   0   &   0.64    & 0
+&   0.32    &   0   &   0.64    &   0   &   0.29    &   0   & 0.48
+&   0   \tabularnewline \hline s420    &   0.16    &   0 &   0.32
+&   0   &   0.16    &   0   &   0.26    &   0   & 0.19    &   0
+&   0.22    &   0   \tabularnewline \hline s444 &   0.16    &   0
+&   0.77    &   0   &   0.32    &   0   & 0.35    &   0   &   0.26
+&   0   &   0.74    &   0 \tabularnewline \hline s510    &   1.02
+&   0   &   1.09    & 0   &   0.90    &   0   &   2.34    &   0
+&   1.63    &   0   & 2.21    &   0   \tabularnewline \hline s526
+&   1.06    &   0 &   2.21    &   0   &   0.90    &   0   &   1.06
+&   0   & 2.18    &   0   &   6.34    &   0   \tabularnewline
+\hline s641 &   0.29    &   0   &   0.61    &   0   &   0.32    &
+0   & 1.22    &   0   &   0.32    &   0   &   1.06    &   0
+\tabularnewline \hline s713    &   0.38    &   0   &   0.64    & 0
+&   0.38    &   0   &   1.79    &   0   &   0.32    &   0   & 0.61
+&   0   \tabularnewline \hline s820    &   4.26    &   0 &   8.06
+&   3   &   5.44    &   0   &   12.13   &   4   & 4.19    &   0
+&   11.78   &   4   \tabularnewline \hline s832 &   6.50    &   0
+&   9.18    &   3   &   6.50    &   0   & 18.27   &   6   &   7.07
+&   0   &   15.84   &   6 \tabularnewline \hline s838    &   0.90
+&   0   &   1.31    & 0   &   1.02    &   0   &   1.79    &   0
+&   1.22    &   0   & 1.82    &   0   \tabularnewline \hline s1196
+&   0.99    &   0 &   3.04    &   0   &   2.62    &   0   &   6.24
+&   0   & 2.75    &   0   &   7.01    &   0   \tabularnewline
+\hline s1238 &   0.99    &   0   &   4.99    &   0   &   3.68    &
+0   & 9.12    &   0   &   7.62    &   0   &   5.54    &   0
+\tabularnewline \hline  \hline Avg.    &   0.92    &   0   & 2.01
+&   0   &   1.26    &   0   &   3.11    &   1   &   1.53 &   0   &
+3.37    &   1   \tabularnewline \hline
+
+\end{tabular}
+}
+\begin{tablenotes}
+\scriptsize {\item [1] Time: CPU processing time. \item[2]
+Buffers: The number of inserted buffers to resolve defective nets.
+\item [3] $q_{nano}$: Probability of Stuck-Open nanodevices's
+defects.}
+\end{tablenotes}
+\end{center}
+\end{table*}
+
+
+\begin{table*}[htb] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{Tabu Search
+reconfiguration results for defect scenario (i) and defect maps
+$R1$, $C1$, and $C2$, when $q_{nano}=40\%-50\%$ - $q_{wire}=20\%$
+- $q_{cell}=0\%$.} \label{R1TS} {
+\begin{tabular}{|c|>{\centering}m{0.78cm}|c|>{\centering}m{0.78cm}|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.78cm}|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.78cm}|c|}
+\hline \multirow{3}{*}{Circ.} & \multicolumn{4}{c|} {\centering
+$R1$ } & \multicolumn{4}{c|} {\centering $C1$ } &
+\multicolumn{4}{c|} {\centering $C2$ } \tabularnewline \cline
+{2-13}
+
+ & \multicolumn{2}{c|} {\centering $q_{nano} = 40\%$ } & \multicolumn{2}{c|} {\centering $q_{nano} = 50\%$ } &
+ \multicolumn{2}{c|} {\centering $q_{nano} = 40\%$ } & \multicolumn{2}{c|} {\centering $q_{nano} = 50\%$ } &
+\multicolumn{2}{c|} {\centering $q_{nano} = 40\%$ } &
+\multicolumn{2}{c|} {\centering $q_{nano} = 50\%$ }
+\tabularnewline \cline {2-13}
+ & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers \tabularnewline \hline
+s27 &   0.03    &   0   &   0.03    &   0   &   0.03    &   0   &
+0.03    &   0   &   0.03    &   0   &   0.03    &   0
+\tabularnewline \hline s208    &   0.10    &   0   &   0.22    & 0
+&   1.60    &   0   &   9.82    &   0   &   0.96    &   0   & 1.09
+&   0   \tabularnewline \hline s298    &   0.22    &   0 &   1.28
+&   0   &   0.26    &   0   &   4.32    &   0   & 0.19    &   0
+&   5.25    &   0   \tabularnewline \hline s344 &   0.19    &   0
+&   1.92    &   0   &   0.93    &   0   & 3.94    &   0   &   0.42
+&   0   &   4.51    &   0 \tabularnewline \hline s349    &   0.38
+&   0   &   6.43    & 0   &   3.30    &   0   &   29.95   &   0
+&   0.93    &   0   & 26.75   &   0   \tabularnewline \hline s382
+&   0.61    &   0 &   5.60    &   0   &   1.60    &   0   &   5.41
+&   0   & 1.28    &   0   &   11.94   &   0   \tabularnewline
+\hline s386 &   2.43    &   0   &   69.95   &   1   &   21.06   &
+0   & 69.38   &   1   &   22.21   &   0   &   65.76   &   2
+\tabularnewline \hline s400    &   1.50    &   0   &   15.36   & 0
+&   5.09    &   0   &   15.84   &   0   &   4.80    &   0   &
+25.63   &   0   \tabularnewline \hline s420    &   0.64    &   0 &
+1.50    &   0   &   0.64    &   0   &   2.46    &   0   & 0.90
+&   0   &   2.46    &   0   \tabularnewline \hline s444 &   3.68
+&   0   &   9.50    &   0   &   12.99   &   0   & 7.30    &   0
+&   7.52    &   0   &   16.54   &   0 \tabularnewline \hline s510
+&   12.64   &   0   &   85.98   & 1   &   11.90   &   0   &
+80.48   &   1   &   18.62   &   0   & 70.40   &   1
+\tabularnewline \hline s526    &   4.19    &   0 &   72.67   &   1
+&   4.70    &   0   &   61.22   &   1   & 8.64    &   0   &
+72.70   &   1   \tabularnewline \hline s641 &   2.21    &   0   &
+37.38   &   1   &   2.66    &   0   & 37.15   &   1   &   4.13
+&   0   &   46.18   &   2 \tabularnewline \hline s713    &   2.05
+&   0   &   41.47   & 1   &   2.30    &   0   &   45.22   &   2
+&   2.88    &   0   & 5.12    &   3   \tabularnewline \hline s820
+&   97.98   &   2 &   160.16  &   8   &   90.05   &   1   &   -
+&   -   &   88.19 &   1   &   -   &   -   \tabularnewline \hline
+s832    &   103.14 &   2   &   171.87  &   7   &   98.53   &   2
+&   -   &   -   & 92.42   &   1   &   -   &   -   \tabularnewline
+\hline s838    & 3.04    &   0   &   11.10   &   0   &   4.38    &
+0   &   23.14 &   0   &   5.50    &   0   &   63.84   &   0
+\tabularnewline \hline s1196   &   57.38   &   0   &   99.26   &
+0   &   48.26 &   0   &   136.93  &   0   &   52.29   &   0   &
+133.25  &   0 \tabularnewline \hline s1238   &   33.22   &   0   &
+153.54  & 0   &   49.50   &   0   &   184.06  &   3   &   98.24
+&   0   & 156.03  &   0   \tabularnewline \hline  \hline Avg.    &
+17.14 &   0   &   49.75   &   1   &   18.94   &   0   &   42.16
+&   1 &   21.59   &   0   &   41.62   &   1   \tabularnewline
+\hline
+
+\end{tabular}
+}
+\begin{tablenotes}
+\scriptsize {\item [1] Time: CPU processing time. \item[2]
+Buffers: The number of inserted buffers to resolve defective nets.
+\item [3] $q_{nano}$: Probability of Stuck-Open nanodevices's
+defects.}
+\end{tablenotes}
+\end{center}
+\end{table*}
+
+
+Reconfiguration results for defect scenario (ii) are shown in
+Table~\ref{s820SimE} and Table~\ref{s1238SimE}. The
+reconfiguration of two circuits (i.e., $s820$ and $s1238$) is
+performed when up to $70\%$ of the nanowires are cut and $20\%$ of
+the nanodevices are stuck-open. For both circuits, SimE has found
+successful reconfigurations without the need for any additional
+buffers even when the probability of
+broken wires is as high as $70\%$. %Reconfiguration of clustered
+%nanodevices defects combined with high nanowires cut probability
+%demanded more computation time.
+%Tabu search has been also employed
+%to reconfigure circuits when nanowires are broken.
+%Table~\ref{s820SimE} and Table~\ref{s1238SimE} also show the
+%reconfiguration cost for circuit s820 and s1238 when wires cut
+%rate $q_{wire}$ is between $10\%$ and $70\%$ and defective
+%nanodevices rate $q_{nano}$ equals $20\%$.
+While on the contrary, results found by Tabu Search required the
+insertion of buffers in order to have a functional and defect-free
+circuits. For high wires cut rates, TS failed to reconfigure s820
+circuit, while it was successful for s1238. Solution reported when
+defective nanodevices are randomly distributed are better than
+those when nanodevices defects are clustered. In both SimE and TS,
+computation time increases when the problem become more complex
+(i.e., $q_{wire}$ increases and nanodevices defects are
+clustered). When many nanowires are cut, CMOL cells connectivity
+domains become considerably limited. Furthermore, clustered
+defects means that some particular CMOL cells have many cells in
+their connectivity domains unreachable.
+
+\begin{table*}[htb] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{SimE and TS results
+for s820 circuit's reconfiguration around cut nanowires (scenario
+ii), when $q_{nano}=20\%$ - $q_{cell}=0\%$.} \label{s820SimE} {
+\begin{tabular}{|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.6cm}|c||>{\centering}m{0.8cm}|c|>{\centering}m{0.8cm}|c|>{\centering}m{0.8cm}|c|}
+\hline \multirow{3}{*}{$q_{wire}$} & \multicolumn{6}{c||}
+{\centering Simulated Evolution } & \multicolumn{6}{c|}
+{\centering Tabu Search } \tabularnewline \cline {2-13}
+
+ & \multicolumn{2}{c|} {\centering $R1$ } & \multicolumn{2}{c|} {\centering $C1$  -
+$\sigma=\frac{2a}{3}$ } & \multicolumn{2}{c||} {\centering $C2$  -
+$\sigma=\frac{4a}{3}$ } & \multicolumn{2}{c|} {\centering $R1$ } &
+\multicolumn{2}{c|} {\centering $C1$  - $\sigma=\frac{2a}{3}$ } &
+\multicolumn{2}{c|} {\centering $C2$  - $\sigma=\frac{4a}{3}$ }
+\tabularnewline \cline {2-13}
+ & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers \tabularnewline \hline
+10\%    &   0.29    &   0   &   0.29    &   0   &   0.45    &   0
+&   1.38    &   0   &   1.25    &   0   &   3.65    &   0
+\tabularnewline \hline 20\%    &   0.42    &   0   &   0.48    & 0
+&   0.77    &   0   &   4.29    &   0   &   2.88    &   0   & 5.79
+&   0   \tabularnewline \hline 30\%    &   1.15    &   0 &   1.12
+&   0   &   1.98    &   0   &   12.80   &   0   & 9.22    &   0 &
+71.81   &   1   \tabularnewline \hline 40\% &   1.34    &   0 &
+2.59    &   0   &   4.13    &   0   & 25.28   &   0   & 92.48   &
+1   &   99.81   &   2 \tabularnewline \hline 50\%    & 2.56    &
+0   &   10.11   & 0   &   9.79    &   0   &   119.97 &   1   &
+134.50  &   2   & 111.55  &   3   \tabularnewline \hline 60\%    &
+7.20    &   0 &   13.47   &   0   &   18.30   & 0   &   150.72  &
+2   & 140.67  &   3   &   -   &   - \tabularnewline \hline 70\%
+& 13.60   &   0   &   26.14   &   0 &   22.85   &   0   &   190.21
+&   2   &   -   &   -   &   -   & -   \tabularnewline \hline
+\hline Avg.    &   3.79    &   0   & 7.74    &   0   &   8.32 &
+0   &   72.09   &   1   &   63.50   & 1   &   58.52   &   1
+\tabularnewline \hline
+\end{tabular}
+}
+\begin{tablenotes}
+\scriptsize {\item [1] Time: CPU processing time. \item[2]
+Buffers: The number of inserted buffers to resolve defective nets.
+\item [3] $q_{wire}$: Probability of nanowires cut.}
+\end{tablenotes}
+\end{center}
+\end{table*}
+
+
+\begin{table*}[htb] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{SimE and TS results
+for s1238 circuit's reconfiguration around cut nanowires (scenario
+ii), when $q_{nano}=20\%$ - $q_{cell}=0\%$.} \label{s1238SimE} {
+\begin{tabular}{|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.6cm}|c|>{\centering}m{0.6cm}|c||>{\centering}m{0.8cm}|c|>{\centering}m{0.8cm}|c|>{\centering}m{0.8cm}|c|}
+\hline \multirow{3}{*}{$q_{wire}$} & \multicolumn{6}{c||}
+{\centering Simulated Evolution } & \multicolumn{6}{c|}
+{\centering Tabu Search } \tabularnewline \cline {2-13}
+
+ & \multicolumn{2}{c|} {\centering $R1$ } & \multicolumn{2}{c|} {\centering $C1$  -
+$\sigma=\frac{2a}{3}$ } & \multicolumn{2}{c||} {\centering $C2$  -
+$\sigma=\frac{4a}{3}$ } & \multicolumn{2}{c|} {\centering $R1$ } &
+\multicolumn{2}{c|} {\centering $C1$  - $\sigma=\frac{2a}{3}$ } &
+\multicolumn{2}{c|} {\centering $C2$  - $\sigma=\frac{4a}{3}$ }
+\tabularnewline \cline {2-13}
+ & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers & Time &  Buffers \tabularnewline \hline
+10\%    &   0.38    &   0   &   0.45    &   0   &   0.61    &   0
+&   1.5 &   0   &   2.34    &   0   &   3.52    &   0
+\tabularnewline \hline 20\%    &   0.58    &   0   &   0.54    & 0
+&   1.22    &   0   &   2.27    &   0   &   3.58    &   0   & 6.05
+&   0   \tabularnewline \hline 30\%    &   0.83    &   0 &   0.86
+&   0   &   0.9 &   0   &   3.78    &   0   &   5.28 &   0   &
+4.93    &   0   \tabularnewline \hline 40\%    & 0.86    &   0   &
+1.73    &   0   &   1.76    &   0   &   5.92 &   0   &   9.6 &   0
+&   8.38    &   0   \tabularnewline \hline 50\%    &   2.21    & 0
+&   1.95    &   0   &   1.7 &   0   & 9.38    &   0   &   14.5 &
+0   &   8.74    &   0 \tabularnewline \hline 60\%    &   3.46 &
+0   &   3.04    & 0   &   4.99    &   0   &   16.13   &   0 &
+26.21   &   0   & 32.96   &   0   \tabularnewline \hline 70\% &
+4.77    &   0 &   5.54    &   0   &   6.14    &   0   & 35.04   &
+0   & 47.36   &   0   &   38.18   &   0 \tabularnewline \hline
+\hline Avg.    &   1.87    &   0   & 2.02    &   0   &   2.47    &
+0 &   10.57   &   0   &   15.55 &   0   &   14.68   &   0
+\tabularnewline \hline
+\end{tabular}
+}
+\begin{tablenotes}
+\scriptsize {\item [1] Time: CPU processing time. \item[2]
+Buffers: The number of inserted buffers to resolve defective nets.
+\item [3] $q_{wire}$: Probability of nanowires cut.}
+\end{tablenotes}
+\end{center}
+\end{table*}
+
+Defect scenario (iii) results are shown in Table~\ref{CMOSSimE}.
+Defective CMOS cells bring about a constraint for both
+\emph{Placement} and \emph{Reconfiguration} design stages. To
+investigate this defect type we have run Simulated Evolution to
+place logic gates into defect-free CMOS cells and then
+reconfiguration rearranged gates location to overcome nanofabric
+defects without relying on CMOS defective cells. In this scenario,
+\emph{Placement} follows the formulation given in our previous
+work~\cite{SaitArafehsime} along with the constraint in
+Equation~\ref{confeq}a. SimE has found solutions with zero buffers
+for all circuits under test except for circuit $s820$ which
+required two buffers for $q_{cell}=10\%$ and three buffers for
+$q_{cell}=20\%$. The given $Time$ in Table~\ref{CMOSSimE} is the
+CPU time for all design stages (i.e., for \emph{Placement},
+\emph{Reconfiguration} and \emph{Net Resolving}).
+
+\begin{table*}[!ht] \scriptsize
+\begin{center} \newcommand\T{\rule{0pt}{2.6ex}}
+\newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
+\setlength{\belowcaptionskip}{4pt} \caption{Implementation of SimE
+for defect scenario (iii), when $q_{nano}=20\%$ -
+$q_{wire}=20\%$.} \label{CMOSSimE} {
+\begin{tabular}{|c|c|c|c|c|}
+\hline \multirow{2}{*}{Circ.} & \multicolumn{2}{c|} {\centering
+$q_{cell}=10\%$ } & \multicolumn{2}{c|} {\centering
+$q_{cell}=20\%$ }  \tabularnewline \cline {2-5}
+ & Time &  Buffers & Time &  Buffers \tabularnewline \hline
+s641    &   17.06   &   0   &   18.50   &   0   \tabularnewline
+\hline s713    &   23.17   &   0   &   28.22   &   0
+\tabularnewline \hline s820    &   136.96  &   2   &   240.13  & 3
+\tabularnewline \hline s838    &   60.48   &   0   &   95.04 &   0
+\tabularnewline \hline s1196   &   295.68  &   0   & 320.90  &   0
+\tabularnewline \hline s1238   &   390.88  &   0 &   415.30  &   0
+\tabularnewline \hline \hline Avg.    & 154.04  &   0   &   186.35
+&   1   \tabularnewline \hline
+\end{tabular}
+}
+\begin{tablenotes}
+\scriptsize {\item [1] Time: CPU processing time. \item[2]
+Buffers: The number of inserted buffers to resolve defective nets.
+\item [3] $q_{cell}$: Probability of CMOS cells defects.}
+\end{tablenotes}
+\end{center}
+\end{table*}
+
+In comparing Simulated Evolution and Tabu Search heuristics
+performance and results; it's clear that SimE is finding better
+results in less computation time for both random and clustered
+defects. That is attributed to the fact that SimE is applying an
+evolutionary search space exploration in which cells that are
+ought to be moved are selected based on goodness evaluation
+technique. Although, TS is a widely adopted search heuristic but
+still it has a shortcoming when circuits rely on multiple
+inter-cells interconnect and in case of high nanofabric defect
+rates.
+
+%-------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------
+
+\subsection{Solutions Verification}
+Each logic circuit implemented in CMOL uses a number of
+nanodevices to connect its modules (i.e., gates). The final
+outcome of CMOL cell mapping heuristics is the list of defect-free
+nanodevices that should be programmed (i.e., set to "ON" state)
+and the list of defect-free CMOS cells. Completely mapped and
+reconfigured CMOL circuits at the end of our proposed design flow
+are tested and verified following the steps shown in
+Figure~\ref{verify}.
+
+Verification procedure starts by checking if any of the active
+nanodevices used to connect CMOL cells is defective. This is done
+by cross-matching the list of used nanodevices with defect
+information stored in the defect map of the given CMOL gird. Then,
+the circuit netlists are reconstructed per the description of the
+nanodevices list and the circuit is written in .bench formate. The
+original circuit description (i.e., the one before mapping) and
+the reconstructed .bench file are forwarded to HOPE
+simulator~\cite{hope} along with randomly generated input
+patterns. We use perl script to run the simulator and compare the
+output of the two circuits to decide if they match. Based on the
+generated outputs we conclude if the two circuits are functionally
+equivalent or not. The verification procedure make sure that our
+heuristics perturbations do not change the circuits description,
+and verify that mapped circuits have the same logical
+functionality as the original ones.
+
+\begin{figure*}[!ht]
+\centering \includegraphics[scale=0.8]{verify.eps}
+\caption{Verification steps; mapped circuits are cross-matched
+with defect map information. The mapped and original circuits are
+simulated using HOPE simulator and outputs compared to decide if
+circuits match.} \label{verify}
+\end{figure*}
+
+\section{Conclusion}
+In this paper we presented a design automation flow for
+reconfiguration-based defect-tolerant in nanofabric architectures.
+Simulated Evolution and Tabu Search are utilized to optimize and
+reconfigure defective CMOL circuits. We analyzed the problem
+behavior and engineered heuristic solutions that exploit better
+understanding of the limitations imposed by CMOL connectivity
+domain and defective components. Further, we analyzed the
+heuristics performance and tuned their parameters. Results
+obtained showed that circuits can be reconfigured to become
+functional even if $50\%$ of CMOL nanodevices are stuck-open or if
+up to $70\%$ of the architecture's nanowires are cut. Our findings
+show that reconfiguration is an effective defect-tolerance
+technique for the emerging nanofabric-based systems and
+nanofabric's imprecise assembly can be negated by elaborate CAD
+tools.
