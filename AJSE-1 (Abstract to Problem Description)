@@ -304,3 +304,86 @@ unaware \emph{Placement} and circuits \emph{Reconfiguration}
 around defects, each main stage is followed by a complementary
 \emph{Nets Resolving} step.} \label{dflow}
 \end{figure*}
+
+\subsection{Problem Formulation}
+Based on the aforementioned defect models and design flow; CMOL
+reconfiguration problem can be stated as follows: for a set of
+gates
+\begin{math} G = {g_{1}, g_{2}, g_{3}, ... , g_{m}} \end{math} and
+the set of gates' fan-ins and fan-outs \begin{math} \Gamma =
+{\gamma_{1}, \gamma_{2}, \gamma_{3}, ... , \gamma_{m}} \end{math}
+where
+\begin{math} \gamma_{i} = \{fan\text{-}in_{i} \ \& \ fan\text{-}out_{i}\}
+\end{math} of $g_{i}$ and given a set of slots or locations
+\begin{math} L = {L_{1}, L_{2}, L_{3}, ... , L_{n}} \end{math} where
+$m \leq n$, each gate $g_{i}$ in location $L_{i}$ that uses
+defective connections is reassigned to a new location $L_{j}$
+given that the connectivity domain is respected and defects are
+avoided. \emph{Reconfiguration} involves rearranging CMOL cells as
+to avoid the use of any defective components. According to CMOL
+FPGA topology, if a particular cell is moved to another location
+it will use different nanodevices to connect with its fan-in and
+fan-out cells. Reconfiguration should not relocate two cells in
+which their connectivity is violated (i.e., invalidate the
+assignment set by \emph{Placement} step), but rather only avoid
+using defective components. Mathematically, reconfiguration
+constraints can be defined as follows; Given a gate and its net
+$(g_{i},\gamma_{i})$ placed in location $L_{i}$, for any gate
+$g_{k} \subseteq G$ and $g_{k}$ in the net $\gamma_{i}$ the
+following constraints should be satisfied.
+
+\begin{subequations} \label{confeq}
+\begin{gather}
+\forall g_{i} \in G : L_{i} \neq 0 \\
+\forall g_{i} \in G, \exists g_{k} \in \gamma_{i} : N(L_{i},
+L_{k}) \neq 0
+\end{gather}
+\end{subequations}
+
+Where $N(L_{i}, L_{k})$ is a binary value (0 or 1) representing
+the nanodevice connecting gate $g_{i}$ in location $L_{i}$ and
+gate $g_{k}$ in location $L_{k}$. $N=0$ means the nanodevice is
+defective. $L=0$ means the location (i.e., the cell) has a defect
+of type 3. CMOL reconfiguration is intended to rearrange cells to
+honor the constraints ~\ref{confeq}(a) and ~\ref{confeq}(b), while
+not violating CMOL connectivity domain constraints defined as
+follows. For a given gate and its net $(g_{i},\gamma_{i})$, any
+gate $g_{k}$ in the net $\gamma{i}$ should satisfy the following.
+
+\begin{subequations} \label{consteq}
+\begin{gather}
+\forall g_{i},g_{k} \in G : (g_{i} \neq g_{k}) \Rightarrow (L_{i} \neq L_{k}) \\
+\forall g_{i} \in G, \exists g_{k} \in \gamma_{i} : L_{k} \in
+C(L_{i})
+\end{gather}
+\end{subequations}
+
+Where $L_{k}$ is the location of $g_{k}$, $C(L_{i})$ is either the
+input or the output connectivity domain of cell in location
+$L_{i}$. Reconfiguration is highly dependent on defect rates and
+connectivity radius $a$. For small connectivity radius, high
+defect rate may lead to reconfiguration failure.
+
+\subsection{Cost Function}
+The main objective of reconfiguration is to tolerate defects and
+ensure that the circuit is working properly. The problem we are
+trying to optimize is to avoid using defective components.
+Therefore, we should have a measure which can quantify the overall
+quality of the solution. The overall cost of a solution is
+expressed as the total number of used defective nanodevices (i.e.,
+the number of connections that violate Equation~\ref{confeq}(b)).
+Equation~\ref{defeq} shows the cost of each gate $g_{i} \in G$ as
+the number of defective components it uses to connect with its
+fan-in and fan-out cells. The overall circuit's cost is the sum of
+individual gates cost.
+
+\begin{subequations} \label{defeq}
+\begin{gather}
+C_{i} = \sum_{j \in fan\text{-}out_{i}} u_{i,j} \\
+u_{i,j} = \left\{
+\begin{array}{l l}
+    1 & \quad \text{if $N(L_{i},L_{j}) = 0$}\\
+    0 & \quad \text{otherwise}\\
+\end{array} \right.
+\end{gather}
+\end{subequations}
