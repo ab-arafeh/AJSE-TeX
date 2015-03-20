@@ -1,0 +1,238 @@
+\section{Non-deterministic Heuristics Designs}
+\subsection{Solution Representation}
+Reconfiguration solutions are represented as an arrangement of
+logic cells in the two dimensional CMOL layout surface. The layout
+size corresponds to the number of required CMOL cells to fit each
+benchmark circuit. Outer cells of the grid are reserved for I/O
+pins, where I/O pins moves are restricted to these reserved
+locations. Reconfiguration process starts from a complete cells
+placement in which all gates are placed within each others
+connectivity. Each gate is represented by a unique positive
+integer value. Changing the location of one cell will change the
+set of nanodevices and nanowires it uses.
+
+\subsection{Simulated Evolution}
+The Simulated Evolution algorithm is a general search strategy for
+solving a variety of combinatorial optimization problems. The
+selection of which elements are to be reallocated is done
+according to a stochastic rule. Already well located elements have
+a high probability to remain where they are. In SimE heuristic the
+movable elements have a goodness value (a number between 0 and 1).
+Those with goodness value close to 1 have a smaller possibility of
+leaving their current locations, while those with smaller goodness
+(i.e., ill suited components) have otherwise. The algorithm has
+one main loop consisting of three basic steps: Evaluation,
+Selection, and Allocation. The three steps are executed in
+sequence until the solution average goodness reaches a maximum
+value, or no noticeable improvement to the solution cost is
+observed after a number of iterations. Further discussion of SimE
+heuristic can be found in~\cite{Sait99}.
+
+\subsubsection{Goodness Function}
+In Simulated Evolution, goodness function is used to evaluate
+individual elements (i.e., gates) in each generation, where unfit
+elements are selected and reassigned to other locations. The
+goodness measure must be strongly related to the objective of the
+problem, in that sense the goodness function of each individual
+element is defined as following:
+
+\begin{equation} \label{defgood}
+goodness_{i} = \frac{connect_{i}}{|\gamma_{i}|}
+\end{equation}
+
+Where $connect_{i}$ represents the number of connections in set
+$\gamma_{i}$ that do not use defective nanodevices (i.e., the
+connections that are defect free) and $|\gamma_{i}|$ is the number
+of fan-ins and fan-outs gates of gate $g_{i}$. The above equation
+assumes a minimization problem (or a maximization of goodness).
+According to the aforementioned definition, if cell $i's$
+connections violate the constraint in Equation~\ref{confeq}(b),
+the cell will have low goodness value. An example of such cell is
+shown in Figure~\ref{fig9}, where two defective nanodevices are
+used to connect gates $4$ and $5$ with gate $i$. According to the
+given definitions of the goodness function, the value of
+$|\gamma_{i}|$ do not change from generation to generation. It is
+only computed once and is based on the original circuit
+description.
+
+\begin{figure}[!t]
+\centering \includegraphics[scale=0.38]{def_calc.eps}
+\caption{Evaluation of gate $i$'s goodness; connection between
+cell $i$ and cells $4$ and $5$ use defective nanodevices,
+$goodness_{i}$ = $connect_{i}/|\gamma_{i}|$ = $3/5=0.6$.
+Nanodevices are shown as black dots.} \label{fig9}
+\end{figure}
+
+\subsubsection{Selection Function}
+It uses original SimE selection function~\cite{Sait99}, an element
+(i.e., gate) is selected for reallocation if its goodness score is
+less than a randomly generated number between 0 and 1. The higher
+the goodness value of the element, the higher is its chance of
+retaining its current location. While, lower the goodness value,
+the more likely the element will be perturbed and reallocated.
+SimE selection function has a nondeterministic nature; an
+individual with a high goodness (i.e., close to one) still has a
+non zero probability of being selected. This stochastic role gives
+SimE the hill climbing property. Reallocating the selected
+elements can be done in a deterministic order that is correlated
+with the objective function being optimized. Hence, prior to the
+allocation step, the elements in the selection set are sorted in
+an ascending order based on their netlist size, where elements
+with higher cardinality of $\gamma_{i}$ are processed first.
+Selection function for CMOL reconfiguration is similar to the one
+used for defect-unaware placement~\cite{SaitArafehsime}. The only
+difference is in the way cells goodness is evaluated. In
+defect-unaware placement, goodness is based on the number of
+unconnected cells, while the goodness function in reconfiguration
+phase is based on the number of used defective components.
+
+\subsubsection{Allocation Function}
+This function has the most impact on the quality of the solution;
+it is intended to generate a new solution that is inherently
+better than the old one. The design of the allocation function is
+related to the problem specifications. The allocation function is
+a complex form of genetic mutation, it alters the locations of all
+elements in the selection set one after the other. The function is
+fully aware of the presence of defects. It actually, swap cells
+based on the cost defined by the number of used defective
+nanodevices. For each selected element, the allocation function
+evaluates the cost of swapping the element with another one in the
+grid based on the cost function in Equation~\ref{defeq}a. Then,
+the best swap is chosen. This constitute a global allocation
+policy, which could prove to be very useful specially in the early
+iterations. Unlike the allocation function in the defect-unaware
+placement~\cite{SaitArafehsime}, an additional constraint applies
+for gates movements during reconfiguration; the reallocation of
+gates is constrained to the region defined by the intersection of
+the connectivity domains of the two cells where the gates are
+located and their fan-in and fan-out cells. This ensures that
+reconfiguration do not invalidate the assignment made by the
+placement phase (i.e., does not move cells in which some of the
+connections violate the constraints in Equation~\ref{consteq}(b)).
+Furthermore, CMOL cells with stuck-open or cut nanowires defects
+can still be used in the reconfiguration stage. SimE's allocation
+function can assign gates to those cells as long as the assigned
+gate's fan-ins and fan-outs don't require the use of defective
+complements.
+
+An evaluation of SimE implementation is shown in
+Figure~\ref{resime}, where the number of elements selected for
+perturbation in each iteration is given. The size of the selection
+set decreases with time, until a final solution with the least
+cost is reached. This is also an indication that the overall
+quality of solution is improving. In addition,
+Figure~\ref{re1sime} shows the problem cost (Equation~\ref{defeq})
+of the solution in each iteration. It shows how the heuristic is
+evolving to better solutions without being too greedy.
+
+\begin{figure}[!h]
+\centering \subfigure[Illustration of change in the size of the
+selection set with iterations for the SimE reconfiguration
+heuristic for s1238.blif benchmark. Selection set size decreases
+with time, until a final solution is found.]{
+\includegraphics[scale=0.4]{re1-sime.eps}
+\label{resime} } \subfigure[Change in number of defective cells
+due to reconfiguration. Cost per iteration in Simulated Evolution
+run shown for s1238.blif benchmark. Solutions found by SimE are
+evolving to better ones without being greedy.]{
+\includegraphics[scale=0.435]{re-sime.eps}
+\label{re1sime} } \caption[]{SimE reconfiguration heuristic.}
+\label{reresime}
+\end{figure}
+
+\subsection{Tabu Search}
+Tabu Search algorithm is a non-deterministic iterative heuristic
+that has been applied to solve many combinatorial optimization
+problems. It is considered as a generalization of local search
+algorithms. At each step, Tabu Search explore the local
+neighborhood of the current solution and the best solution in that
+neighborhood is selected as the new current solution. TS is a
+heuristic that proceeds by making iterative perturbations while
+preventing cycling to certain number of recently visited points in
+search space. Detailed description of Tabu Search's attributes and
+constructs can be found in~\cite{Sait99}. In engineering Tabu
+Search for reconfiguration phase we have used the same
+methodology, move attributes and aspiration criteria used in
+defect-unaware placement~\cite{SaitArafehts}. Reconfiguration
+phase neighborhood is generated by performing one move (i.e.,
+perturbation). Each solution in the candidate list is evaluated
+based on the change in number of used defective components before
+and after the swap, taking care that swaps do not violate the
+constraints set by Equation~\ref{consteq}(b). The actual size of
+the candidate list is empirically set based on the performance of
+the heuristic and the problem behavior. Figure~\ref{rets} shows
+the quality of the solutions produced by TS over iterations. The
+heuristic steadily converges to near optimal solution.
+
+\begin{figure}[!h]
+\centering \subfigure[Change of reconfiguration cost per iteration
+for s832.blif benchmark.]{
+\includegraphics[scale=0.4]{re-ts.eps}
+\label{rets} } \subfigure[Change of reconfiguration cost with
+respect to changes in candidate list size for different
+nanodevices stuck-open defect rates $q_{nano}=10\%$ to $50\%$.
+High defect rates require larger candidate list sizes. s1196.blif
+benchmark.]{
+\includegraphics[scale=0.4]{re1-ts.eps}
+\label{re1ts} } \caption[]{Tabu Search reconfiguration heuristic.}
+\label{rerets}
+\end{figure}
+
+Figure~\ref{re1ts} shows the change in the problem cost with
+respect to changes in candidate list sizes for different defect
+rates. Each rate constitutes a distinct instance of the
+reconfiguration problem. In high defect rates, a small candidate
+list (e.g., between 5 and 35) results in bad solutions, whereas
+for low rates, a small list is sufficient. The problem becomes
+more constrained when many nanodevices are defective, thus, TS
+requires more choices to effectively explore the search space.
+Throughout our implementation we have used different list sizes
+for different defect rates; a maximum value of 60 is used as an
+upper bound limit on the list size. We have further used the same
+candidate list probabilistic swap selection described
+in~\cite{SaitArafehts} using Gaussian random variable that has
+mean $m0 = 0$ and standard deviation $\sigma = circuit-size$. This
+modified neighborhood generation has reduced the candidate list
+sizes considerably compared to that required when random cells are
+selected.
+
+\subsection{Nets Resolving Procedure (Buffers Insertion)}
+When Reconfiguration stage terminates, there may still be some
+connections that use defective nanodevices or cut nanowires. In
+such case, the circuit will not be functional and defective
+connections need to be mitigated by rerouting them through
+additional buffers. Intermediary inverters are inserted between
+cells which have their connections faulty. Buffers insertion is
+done by performing the same Simulated Evolution or Tabu Search
+heuristics but with some modifications. The heuristics will assign
+pairs of inverters to empty locations (i.e., unused CMOL cells) so
+that two cells with defective interconnect become connected. Those
+buffers compensate for the missed/defective connections. Each pair
+of inverters can make a cell connect to another cell using a new
+set of nanodevices and nanowires. The constraints highlighted in
+Equation~\ref{confeq} and Equation~\ref{consteq} should also apply
+for the inserted inverters. SimE allocation function and Tabu
+Search swaps are modified as to only permit the interchange of two
+inserted inverters or to reallocate an inverter to a different
+unused CMOL cell. The other already occupied CMOL cells are
+assumed to be fixed and no perturbation can involve any one of
+them.
+
+
+Initially, the \emph{Net Resolving} procedure starts with one
+buffer (pair of inverters) for each defective inter-cells
+connection. Inverters are randomly assigned and then SimE or TS
+are called with the aforementioned modifications. The heuristics
+then continuously try to improve the locations of the inserted
+inverters until all of them are placed and all defective nets are
+resolved. If Net Resolving procedure terminates while still some
+connections are defective (i.e., the heuristics failed to
+substitute them by inserting additional buffers), the unresolved
+interconnects are substituted by two buffers instead of one (i.e.,
+four inverters) and the procedure is repeated. This process goes
+on until all violating connections are resolved by new buffers
+that respect CMOL constraints, or until no cells are available in
+the grid to which inverters can be assigned to. In our
+implementation, we limited the number of inverters that can be
+inserted to substitute a particular defective interconnect to 6 to
+avoid major deterioration of the circuit’s timing delay.
